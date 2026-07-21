@@ -61,43 +61,32 @@ public class RobotContainer {
                                 () -> DriveCommands.signSquare(-driverController.getLeftX()),
                                 () -> DriveCommands.signSquare(-driverController.getRightX()))
                 )
-
         );
+        Intake.setPower(subsystems.intake(), () -> IntakeConstants.INTAKE_IDLE_POWER);
     }
 
     public void configureButtonBindings() {
-        driverController.a().toggleOnTrue(Shooter.setPowerTelop(shooter, () -> ShooterConstants.SHOOTER_POWER));
 
         driverController.start().onTrue(Pivot.resetPosition(pivot));
-        
-        driverController.b().onTrue(Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER));
 
+        driverController.y().onTrue(Pivot.setPosition(subsystems.pivot(),PivotConstants.HIGH));
+        driverController.b().onTrue(Pivot.setPosition(subsystems.pivot(),PivotConstants.LOW));
+        driverController.a().onTrue(Pivot.setPosition(subsystems.pivot(),PivotConstants.FEED));
+        driverController.x().onTrue(Pivot.setPosition(subsystems.pivot(),PivotConstants.CLIMB));
         driverController.rightTrigger().onTrue(
-                Commands.parallel(
-                        Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER),
-                        Shooter.setPowerTelop(shooter, () -> -0.5)
+                Intake.setPower(subsystems.intake(),IntakeConstants.INTAKE_POWER
                 )
         ).onFalse(
-                Commands.sequence(
-                        Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER).withTimeout(0.1),
-                        Intake.setPower(intake, () -> 0.0).withTimeout(0.0)
-
-                )
+                Intake.setPower(subsystems.intake(), () -> IntakeConstants.INTAKE_IDLE_POWER)
         );
-
         driverController.leftTrigger().onTrue(
-                Commands.sequence(
-                        Shooter.setPower(shooter, () -> ShooterConstants.SHOOTER_POWER).withTimeout(1.5),
-                        Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER).withTimeout(3.0)
+                Intake.setPower(subsystems.intake(),IntakeConstants.OUTTAKE_POWER
                 )
         ).onFalse(
-                Commands.sequence(
-                        Shooter.setPower(shooter, () -> 0.0).withTimeout(0.0),
-                        Intake.setPower(intake, () -> 0.0).withTimeout(0.0)
-                )
+                Intake.setPower(subsystems.intake(), () -> IntakeConstants.INTAKE_IDLE_POWER)
         );
-
-        driverController.back().onTrue(DriveCommands.setPose(drive, Pose::new));
+        driverController.leftBumper().onTrue(Intake.setPower(subsystems.intake(),0));
+        driverController.rightBumper().onTrue(Intake.setPower(subsystems.intake(),0));
     }
 
     public Command getAutoCommand(OpModeConstants auto) {
