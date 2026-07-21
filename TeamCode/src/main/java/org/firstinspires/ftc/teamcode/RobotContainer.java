@@ -11,15 +11,12 @@ import org.firstinspires.ftc.teamcode.commands.auto.PoseStorage;
 import org.firstinspires.ftc.teamcode.lib.wpilib.CommandGamepad;
 import org.firstinspires.ftc.teamcode.opmodes.OpModeConstants;
 import org.firstinspires.ftc.teamcode.subsystems.Subsystems;
-import org.firstinspires.ftc.teamcode.subsystems.claw.Claw;
-import org.firstinspires.ftc.teamcode.subsystems.claw.ClawConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drive.Drive;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.intake.IntakeConstants;
 import org.firstinspires.ftc.teamcode.subsystems.pivot.Pivot;
 import org.firstinspires.ftc.teamcode.subsystems.pivot.PivotConstants;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
-import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConstants;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -28,7 +25,6 @@ public class RobotContainer {
     private final Drive drive;
     private final Pivot pivot;
     private final Intake intake;
-    private final Shooter shooter;
     private final Subsystems subsystems;
 
     private final CommandGamepad driverController;
@@ -37,9 +33,8 @@ public class RobotContainer {
         drive = new Drive(hwMap, telemetry);
         pivot = new Pivot(hwMap, telemetry);
         intake = new Intake(hwMap, telemetry);
-        shooter = new Shooter(hwMap, telemetry);
 
-        subsystems = new Subsystems(drive, pivot, intake, shooter);
+        subsystems = new Subsystems(drive, pivot, intake);
 
         driverController = new CommandGamepad(gamepad1);
 
@@ -66,38 +61,18 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
-        driverController.a().toggleOnTrue(Shooter.setPowerTelop(shooter, () -> ShooterConstants.SHOOTER_POWER));
-
         driverController.start().onTrue(Pivot.resetPosition(pivot));
-        
-        driverController.b().onTrue(Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER));
-
-        driverController.rightTrigger().onTrue(
-                Commands.parallel(
-                        Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER),
-                        Shooter.setPowerTelop(shooter, () -> -0.5)
-                )
-        ).onFalse(
-                Commands.sequence(
-                        Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER).withTimeout(0.1),
-                        Intake.setPower(intake, () -> 0.0).withTimeout(0.0)
-
-                )
-        );
-
-        driverController.leftTrigger().onTrue(
-                Commands.sequence(
-                        Shooter.setPower(shooter, () -> ShooterConstants.SHOOTER_POWER).withTimeout(1.5),
-                        Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER).withTimeout(3.0)
-                )
-        ).onFalse(
-                Commands.sequence(
-                        Shooter.setPower(shooter, () -> 0.0).withTimeout(0.0),
-                        Intake.setPower(intake, () -> 0.0).withTimeout(0.0)
-                )
-        );
-
-        driverController.back().onTrue(DriveCommands.setPose(drive, Pose::new));
+        driverController.b().onTrue(Pivot.setPosition(subsystems.pivot(), PivotConstants.CONE));
+        driverController.y().onTrue(Pivot.setPosition(subsystems.pivot(), PivotConstants.HIGH));
+        driverController.a().onTrue(Pivot.setPosition(subsystems.pivot(), PivotConstants.FEED));
+        driverController.x().onTrue(Pivot.setPosition(subsystems.pivot(), PivotConstants.CLIMB));
+        driverController.rightBumper().onTrue(Pivot.setPosition(subsystems.pivot(), PivotConstants.CLIMB_POS));
+        driverController.leftTrigger().onTrue(Intake.setPower(subsystems.intake(), IntakeConstants.INTAKE_POWER))
+                .onFalse(Intake.setPower(subsystems.intake(),0));
+        driverController.rightTrigger().onTrue(Intake.setPower(subsystems.intake(), IntakeConstants.OUTTAKE_POWER))
+                .onFalse((Intake.setPower(subsystems.intake(),0)));
+        driverController.leftBumper().onTrue(Intake.setPower(subsystems.intake(), IntakeConstants.CONE_POWER))
+                .onFalse(Intake.setPower(subsystems.intake(),0));
     }
 
     public Command getAutoCommand(OpModeConstants auto) {

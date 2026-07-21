@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.pedropathing.localization.Pose;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RobotContainer;
@@ -44,6 +45,6 @@ public class RedAuto extends CommandOpMode {
     public void disabledInit() {
         CommandScheduler.getInstance().reset();
 
-        PoseStorage.currentPose = robotContainer.getDrivePose();
+        PoseStorage.currentPose = new Pose(robotContainer.getDrivePose().getX(), robotContainer.getDrivePose().getY(), Math.toRadians(robotContainer.getDrivePose().getHeading() + 90));
     }
 }

@@ -4,7 +4,7 @@
         <LynxModule name="Control Hub" port="173">
             <goBILDA5202SeriesMotor name="FL" port="0"/>-->
             <goBILDA5202SeriesMotor name="BL" port="1"/>-->
-            <goBILDA5202SeriesMotor name="shooter" port="3"/>-->
+            <goBILDA5202SeriesMotor name="intake" port="3"/>-->
             <goBILDA5202SeriesMotor name="pivot" port="2"/>-->
 
             <Servo name = "claw" port="0"/>
@@ -16,7 +16,6 @@
 
             <goBILDA5202SeriesMotor name="FR" port="1"/>
             <goBILDA5202SeriesMotor name="BR" port="0"/>
-            <goBILDA5202SeriesMotor name="intake" port="2"/>-->
 
 
 
