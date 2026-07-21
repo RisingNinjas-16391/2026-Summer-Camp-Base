@@ -69,7 +69,8 @@ public class RobotContainer {
         driverController.a().toggleOnTrue(Shooter.setPowerTelop(shooter, () -> ShooterConstants.SHOOTER_POWER));
 
         driverController.start().onTrue(Pivot.resetPosition(pivot));
-        
+        driverController.back().onTrue(DriveCommands.setPose(subsystems.drive(), () -> new Pose(0, 0, 0)));
+
         driverController.b().onTrue(Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER));
 
         driverController.rightTrigger().onTrue(

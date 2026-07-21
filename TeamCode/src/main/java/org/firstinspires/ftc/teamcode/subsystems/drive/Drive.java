@@ -40,6 +40,7 @@ public class Drive extends SubsystemBase {
             drive.drawOnDashBoard();
 //            telemetry.addData("Drive T", drive.getCurrentTValue());
 //            drive.telemetryDebug(telemetry);
+            telemetry.addData("Heading", Math.toDegrees(drive.getPose().getHeading()));
         } catch (Exception ignored) {
         }
     }

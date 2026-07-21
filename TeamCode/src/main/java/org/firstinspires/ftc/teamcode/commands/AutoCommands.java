@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.pedropathing.localization.Pose;
 
 import org.firstinspires.ftc.teamcode.subsystems.Subsystems;
 
@@ -50,12 +51,14 @@ public class AutoCommands {
 
     public static Command blueAuto(Subsystems subsystems) {
         return Commands.sequence(
+                DriveCommands.setPose(subsystems.drive(), new Pose(0, 0, Math.toRadians(-90))),
                 DriveCommands.forward(subsystems.drive(), 10)
         );
     }
 
     public static Command redAuto(Subsystems subsystems) {
         return Commands.sequence(
+                DriveCommands.setPose(subsystems.drive(), new Pose(0, 0, Math.toRadians(90))),
                 DriveCommands.forward(subsystems.drive(), 10)
         );
     }

@@ -100,6 +100,10 @@ public class DriveCommands {
         return Commands.runOnce(() -> drive.setPose(pose.get()), drive);
     }
 
+    public static Command setPose(Drive drive, Pose pose) {
+        return Commands.runOnce(() -> drive.setPose(pose), drive);
+    }
+
     public static Command forward(Drive drive, DoubleSupplier distance) {
         return Drive.followPath(
                 drive,
