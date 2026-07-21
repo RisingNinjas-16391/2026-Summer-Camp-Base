@@ -18,6 +18,7 @@
 
             <goBILDA5202SeriesMotor name="FL" port="1"/>
             <goBILDA5202SeriesMotor name="BL" port="0"/>
+            <goBILDA5202SeriesMotor name="intake" port="2"/>
 
         </LynxModule>
     </LynxUsbDevice>

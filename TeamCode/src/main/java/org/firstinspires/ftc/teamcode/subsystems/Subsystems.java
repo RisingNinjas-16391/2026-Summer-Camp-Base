@@ -10,5 +10,5 @@ import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 //public record Subsystems(Drive drive, Pivot pivot, Claw claw) {
 //}
 
-public record Subsystems(Drive drive, Pivot pivot, Intake intake, Shooter shooter) {
+public record Subsystems(Drive drive, Pivot pivot, Intake intake) {
 }

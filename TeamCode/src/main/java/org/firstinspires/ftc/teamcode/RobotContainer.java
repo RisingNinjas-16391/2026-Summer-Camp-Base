@@ -28,7 +28,7 @@ public class RobotContainer {
     private final Drive drive;
     private final Pivot pivot;
     private final Intake intake;
-    private final Shooter shooter;
+//    private final Shooter shooter;
     private final Subsystems subsystems;
 
     private final CommandGamepad driverController;
@@ -37,9 +37,9 @@ public class RobotContainer {
         drive = new Drive(hwMap, telemetry);
         pivot = new Pivot(hwMap, telemetry);
         intake = new Intake(hwMap, telemetry);
-        shooter = new Shooter(hwMap, telemetry);
+//        shooter = new Shooter(hwMap, telemetry);
 
-        subsystems = new Subsystems(drive, pivot, intake, shooter);
+        subsystems = new Subsystems(drive, pivot, intake);
 
         driverController = new CommandGamepad(gamepad1);
 
@@ -66,38 +66,17 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
-        driverController.a().toggleOnTrue(Shooter.setPowerTelop(shooter, () -> ShooterConstants.SHOOTER_POWER));
 
         driverController.start().onTrue(Pivot.resetPosition(pivot));
-        
-        driverController.b().onTrue(Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER));
 
-        driverController.rightTrigger().onTrue(
-                Commands.parallel(
-                        Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER),
-                        Shooter.setPowerTelop(shooter, () -> -0.5)
-                )
-        ).onFalse(
-                Commands.sequence(
-                        Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER).withTimeout(0.1),
-                        Intake.setPower(intake, () -> 0.0).withTimeout(0.0)
+        driverController.a().onTrue(Pivot.setPosition(subsystems.pivot(),() -> PivotConstants.FEED));
+        driverController.b().onTrue(Pivot.setPosition(subsystems.pivot(),() -> PivotConstants.LOW));
+        driverController.x().onTrue(Pivot.setPosition(subsystems.pivot(),() -> PivotConstants.HIGH));
+        driverController.y().onTrue(Pivot.setPosition(subsystems.pivot(),() -> PivotConstants.CLIMB));
+        driverController.rightTrigger().onTrue(Intake.setPower(subsystems.intake(),() -> IntakeConstants.INTAKE_POWER));
+        driverController.leftTrigger().onTrue(Intake.setPower(subsystems.intake(),() -> IntakeConstants.OUTTAKE_POWER))
+                .onFalse(Intake.setPower(subsystems.intake(),0));
 
-                )
-        );
-
-        driverController.leftTrigger().onTrue(
-                Commands.sequence(
-                        Shooter.setPower(shooter, () -> ShooterConstants.SHOOTER_POWER).withTimeout(1.5),
-                        Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER).withTimeout(3.0)
-                )
-        ).onFalse(
-                Commands.sequence(
-                        Shooter.setPower(shooter, () -> 0.0).withTimeout(0.0),
-                        Intake.setPower(intake, () -> 0.0).withTimeout(0.0)
-                )
-        );
-
-        driverController.back().onTrue(DriveCommands.setPose(drive, Pose::new));
     }
 
     public Command getAutoCommand(OpModeConstants auto) {
@@ -112,3 +91,4 @@ public class RobotContainer {
         return drive.getPose();
     }
 }
+
