@@ -1,9 +1,17 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import static org.firstinspires.ftc.teamcode.subsystems.intake.IntakeConstants.INTAKE_POWER;
+import static org.firstinspires.ftc.teamcode.subsystems.intake.IntakeConstants.OUTTAKE_POWER;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.pedropathing.localization.Pose;
 
 import org.firstinspires.ftc.teamcode.subsystems.Subsystems;
-
+import org.firstinspires.ftc.teamcode.subsystems.pivot.Pivot;
+import org.firstinspires.ftc.teamcode.subsystems.pivot.PivotConstants;
+import org.firstinspires.ftc.teamcode.subsystems.servo_intake.ServoIntake;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -50,13 +58,69 @@ public class AutoCommands {
 
     public static Command blueAuto(Subsystems subsystems) {
         return Commands.sequence(
-                DriveCommands.forward(subsystems.drive(), 10)
+                DriveCommands.setPose(subsystems.drive(), () -> new Pose(0, 0, Math.toRadians(-90))),
+                DriveCommands.forward(subsystems.drive(),57),
+                Commands.parallel(
+                        Pivot.setPosition(subsystems.pivot(), PivotConstants.SHOOT).withTimeout(1),
+                        DriveCommands.strafeLeft(subsystems.drive(),13)
+                ),
+                DriveCommands.forward(subsystems.drive(),3),
+                Intake.setPower(subsystems.intake(),OUTTAKE_POWER).withTimeout(.5),
+                Intake.setPower(subsystems.intake(), 0).withTimeout(0),
+                DriveCommands.backward(subsystems.drive(), 7.5),
+                Commands.parallel(
+                        DriveCommands.strafeRight(subsystems.drive(), 10),
+                        Pivot.setPosition(subsystems.pivot(), PivotConstants.FEED).withTimeout(.5),
+                        Intake.setPower(subsystems.intake(), INTAKE_POWER).withTimeout(.5)
+                ),
+                DriveCommands.forward(subsystems.drive(), 7.5),
+                Commands.waitSeconds(2),
+                DriveCommands.backward(subsystems.drive(), 8),
+                Intake.setPower(subsystems.intake(), 0).withTimeout(0),
+                Commands.parallel(
+                        DriveCommands.strafeLeft(subsystems.drive(),14),
+                        Pivot.setPosition(subsystems.pivot(), PivotConstants.SHOOT).withTimeout(.5)
+                ),
+                DriveCommands.forward(subsystems.drive(),12).withTimeout(2),
+                Intake.setPower(subsystems.intake(),OUTTAKE_POWER).withTimeout(.5),
+                Intake.setPower(subsystems.intake(), 0).withTimeout(0),
+                DriveCommands.backward(subsystems.drive(),26),
+                Pivot.setPosition(subsystems.pivot(), PivotConstants.FEED).withTimeout(.5),
+                DriveCommands.strafeRight(subsystems.drive(),21)
         );
     }
 
     public static Command redAuto(Subsystems subsystems) {
         return Commands.sequence(
-                DriveCommands.forward(subsystems.drive(), 10)
-        );
+                DriveCommands.setPose(subsystems.drive(), () -> new Pose(0, 0, Math.toRadians(90))),
+                DriveCommands.forward(subsystems.drive(),57),
+                Commands.parallel(
+                        Pivot.setPosition(subsystems.pivot(), PivotConstants.SHOOT).withTimeout(.5),
+                        DriveCommands.strafeRight(subsystems.drive(),14)
+                ),
+                DriveCommands.forward(subsystems.drive(),5).withTimeout(2),
+                Intake.setPower(subsystems.intake(),.85).withTimeout(.5),
+                Intake.setPower(subsystems.intake(), 0).withTimeout(0),
+                DriveCommands.backward(subsystems.drive(), 8),
+                Commands.parallel(
+                    DriveCommands.strafeLeft(subsystems.drive(), 14),
+                    Pivot.setPosition(subsystems.pivot(), PivotConstants.FEED).withTimeout(.5)
+                ),
+                Intake.setPower(subsystems.intake(), INTAKE_POWER).withTimeout(.5),
+                DriveCommands.forward(subsystems.drive(), 5),
+                Commands.waitSeconds(1),
+                DriveCommands.backward(subsystems.drive(), 8),
+                Intake.setPower(subsystems.intake(), 0).withTimeout(.5),
+                Commands.parallel(
+                    DriveCommands.strafeRight(subsystems.drive(),14),
+                    Pivot.setPosition(subsystems.pivot(), PivotConstants.SHOOT).withTimeout(.5)
+                ),
+                DriveCommands.forward(subsystems.drive(),10.5),
+                Intake.setPower(subsystems.intake(),.85).withTimeout(.5),
+                Intake.setPower(subsystems.intake(), 0).withTimeout(0),
+                DriveCommands.backward(subsystems.drive(),23),
+                DriveCommands.strafeLeft(subsystems.drive(), 28)
+
+                );
     }
 }
