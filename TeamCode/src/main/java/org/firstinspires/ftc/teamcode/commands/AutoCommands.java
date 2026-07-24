@@ -16,8 +16,8 @@ public class AutoCommands {
     Available Commands:
 
     Drivetrain (Replace distance with a number):
-    DriveCommands.forward(subsystems.drive(), distance),
     DriveCommands.backward(subsystems.drive(), distance),
+
     DriveCommands.strafeLeft(subsystems.drive(), distance),
     DriveCommands.strafeRight(subsystems.drive(), distance),
 
@@ -51,10 +51,18 @@ public class AutoCommands {
 
     public static Command blueAuto(Subsystems subsystems) {
         return Commands.sequence(
-                DriveCommands.setPose(subsystems.drive(), new Pose(0, 0, Math.toRadians(-90))),
-                DriveCommands.forward(subsystems.drive(), 10)
+                DriveCommands.setPose(subsystems.drive(), new Pose(0, 0, Math.toRadians(0))),
+                DriveCommands.strafeLeft(subsystems.drive(), 10),
+                DriveCommands.turn(subsystems.drive(), -90),
+                DriveCommands.strafeLeft(subsystems.drive(), 10),
+                DriveCommands.turn(subsystems.drive(), -90),
+                DriveCommands.strafeLeft(subsystems.drive(), 10),
+                DriveCommands.turn(subsystems.drive(), -90),
+                DriveCommands.strafeLeft(subsystems.drive(), 10),
+                DriveCommands.turn(subsystems.drive(), -90)
         );
     }
+
 
     public static Command redAuto(Subsystems subsystems) {
         return Commands.sequence(

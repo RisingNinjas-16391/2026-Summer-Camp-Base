@@ -32,7 +32,7 @@ public class Pivot extends SubsystemBase {
 
         pivotMotor = new MotorEx(hwMap, "pivot");
 
-        pivotMotor.setInverted(false);
+        pivotMotor.setInverted(true);
 
         pivotMotor.stopAndResetEncoder();
 
@@ -55,7 +55,7 @@ public class Pivot extends SubsystemBase {
             // If setpoint on dashboard changes, update the setpoint
             if (kSetpoint != PivotConstants.setpoint) {
                 kSetpoint = PivotConstants.setpoint;
-                desiredPosition = kSetpoint;
+                setPosition(kSetpoint);
             }
 
             if (!isResetting) {

@@ -16,7 +16,7 @@ public class Elevator extends SubsystemBase {
     private final Telemetry telemetry;
 
     private final MotorEx topMotor;
-    private final MotorEx bottomMotor;
+//    private final MotorEx bottomMotor;
 
     private final SquIDController controller;
 
@@ -28,13 +28,13 @@ public class Elevator extends SubsystemBase {
         this.telemetry = telemetry;
 
         topMotor = new MotorEx(hwMap, "liftTop");
-        bottomMotor = new MotorEx(hwMap, "liftBottom");
+//        bottomMotor = new MotorEx(hwMap, "liftBottom");
 
         topMotor.setInverted(true);
-        bottomMotor.setInverted(false);
+//        bottomMotor.setInverted(false);
 
         topMotor.stopAndResetEncoder();
-        bottomMotor.stopAndResetEncoder();
+//        bottomMotor.stopAndResetEncoder();
 
         controller = new SquIDController(0.1);
 
@@ -66,7 +66,7 @@ public class Elevator extends SubsystemBase {
 
         double output = controller.calculate(ElevatorConstants.kP, position, topMotor.getCurrentPosition()) + ElevatorConstants.kG;
         topMotor.set(output);
-        bottomMotor.set(output);
+//        bottomMotor.set(output);
     }
 
     private void setPosition(double position) {

@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Subsystems;
 import org.firstinspires.ftc.teamcode.subsystems.claw.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.claw.ClawConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drive.Drive;
+import org.firstinspires.ftc.teamcode.subsystems.elevator.Elevator;
+import org.firstinspires.ftc.teamcode.subsystems.elevator.ElevatorConstants;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.intake.IntakeConstants;
 import org.firstinspires.ftc.teamcode.subsystems.pivot.Pivot;
@@ -27,8 +29,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class RobotContainer {
     private final Drive drive;
     private final Pivot pivot;
-    private final Intake intake;
-    private final Shooter shooter;
+    private final Elevator elevator;
+    private final Claw claw;
     private final Subsystems subsystems;
 
     private final CommandGamepad driverController;
@@ -36,10 +38,10 @@ public class RobotContainer {
     public RobotContainer(HardwareMap hwMap, Telemetry telemetry, Gamepad gamepad1, Gamepad gamepad2, OpModeConstants autoNum) {
         drive = new Drive(hwMap, telemetry);
         pivot = new Pivot(hwMap, telemetry);
-        intake = new Intake(hwMap, telemetry);
-        shooter = new Shooter(hwMap, telemetry);
+        elevator = new Elevator(hwMap, telemetry);
+        claw = new Claw(hwMap, telemetry);
 
-        subsystems = new Subsystems(drive, pivot, intake, shooter);
+        subsystems = new Subsystems(drive, pivot, elevator, claw);
 
         driverController = new CommandGamepad(gamepad1);
 
@@ -66,39 +68,75 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
-        driverController.a().toggleOnTrue(Shooter.setPowerTelop(shooter, () -> ShooterConstants.SHOOTER_POWER));
 
-        driverController.start().onTrue(Pivot.resetPosition(pivot));
-        driverController.back().onTrue(DriveCommands.setPose(subsystems.drive(), () -> new Pose(0, 0, 0)));
+        driverController.a().onTrue(
+                Commands.parallel(
+                        Pivot.setPosition(pivot, ()-> PivotConstants.LEVEL1),
+                        Elevator.setPosition(elevator,()-> ElevatorConstants.LEVEL1)
+                        )
+        );
 
-        driverController.b().onTrue(Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER));
+        driverController.b().onTrue(
+                Commands.parallel(
+                        Pivot.setPosition(pivot, ()-> PivotConstants.LEVEL2),
+                        Elevator.setPosition(elevator,()-> ElevatorConstants.LEVEL2)
+                )
+        );
+
+        driverController.y().onTrue(
+                Commands.parallel(
+                        Pivot.setPosition(pivot, ()-> PivotConstants.LEVEL3),
+                        Elevator.setPosition(elevator,()-> ElevatorConstants.LEVEL3)
+                )
+        );
+
+        driverController.x().onTrue(
+                Commands.parallel(
+                        Pivot.setPosition(pivot, ()-> PivotConstants.LEVEL4),
+                        Elevator.setPosition(elevator,()-> ElevatorConstants.LEVEL4)
+                )
+        );
+
+        driverController.dpadRight().onTrue(
+                Commands.parallel(
+                        Pivot.setPosition(pivot, ()-> PivotConstants.LEVEL5),
+                        Elevator.setPosition(elevator,()-> ElevatorConstants.LEVEL5)
+                )
+        );
+
+        driverController.dpadUp().onTrue(
+                Commands.parallel(
+                        Pivot.setPosition(pivot, ()-> PivotConstants.CLIMB),
+                        Elevator.setPosition(elevator,()-> ElevatorConstants.CLIMB)
+                )
+        );
+
+        driverController.dpadDown().onTrue(
+                Commands.parallel(
+                        Pivot.setPosition(pivot, ()-> PivotConstants.FEED),
+                        Elevator.setPosition(elevator,()-> ElevatorConstants.FEED)
+                )
+        );
+
 
         driverController.rightTrigger().onTrue(
                 Commands.parallel(
-                        Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER),
-                        Shooter.setPowerTelop(shooter, () -> -0.5)
+                        Pivot.setPosition(pivot, PivotConstants.FEED),
+                        Elevator.setPosition(elevator, () -> ElevatorConstants.FEED),
+                        Claw.setPosition(claw, () -> ClawConstants.OPEN)
                 )
         ).onFalse(
-                Commands.sequence(
-                        Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER).withTimeout(0.1),
-                        Intake.setPower(intake, () -> 0.0).withTimeout(0.0)
-
-                )
+                Claw.setPosition(claw, () -> ClawConstants.CLOSE)
         );
 
         driverController.leftTrigger().onTrue(
-                Commands.sequence(
-                        Shooter.setPower(shooter, () -> ShooterConstants.SHOOTER_POWER).withTimeout(1.5),
-                        Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER).withTimeout(3.0)
-                )
-        ).onFalse(
-                Commands.sequence(
-                        Shooter.setPower(shooter, () -> 0.0).withTimeout(0.0),
-                        Intake.setPower(intake, () -> 0.0).withTimeout(0.0)
-                )
+                Claw.setPosition(claw, () -> ClawConstants.OPEN)
         );
 
         driverController.back().onTrue(DriveCommands.setPose(drive, Pose::new));
+
+        driverController.start().onTrue(Pivot.resetPosition(pivot));
+
     }
 
     public Command getAutoCommand(OpModeConstants auto) {
