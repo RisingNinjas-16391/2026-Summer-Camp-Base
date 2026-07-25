@@ -11,6 +11,8 @@ import org.ejml.dense.row.FMatrixComponent;
 import org.firstinspires.ftc.teamcode.commands.auto.PoseStorage;
 import org.firstinspires.ftc.teamcode.lib.controller.SquIDController;
 import org.firstinspires.ftc.teamcode.subsystems.drive.Drive;
+import org.firstinspires.ftc.teamcode.subsystems.pivot.Pivot;
+import org.firstinspires.ftc.teamcode.subsystems.pivot.PivotConstants;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;

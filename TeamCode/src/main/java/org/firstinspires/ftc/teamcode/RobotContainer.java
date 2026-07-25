@@ -66,36 +66,11 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
-        driverController.a().toggleOnTrue(Shooter.setPowerTelop(shooter, () -> ShooterConstants.SHOOTER_POWER));
-
-        driverController.start().onTrue(Pivot.resetPosition(pivot));
-        driverController.back().onTrue(DriveCommands.setPose(subsystems.drive(), () -> new Pose(0, 0, 0)));
-
-        driverController.b().onTrue(Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER));
-
-        driverController.rightTrigger().onTrue(
-                Commands.parallel(
-                        Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER),
-                        Shooter.setPowerTelop(shooter, () -> -0.5)
-                )
-        ).onFalse(
-                Commands.sequence(
-                        Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER).withTimeout(0.1),
-                        Intake.setPower(intake, () -> 0.0).withTimeout(0.0)
-
-                )
+        driverController.dpadUp().onTrue(
+                        Pivot.raisePivot(pivot)
         );
-
-        driverController.leftTrigger().onTrue(
-                Commands.sequence(
-                        Shooter.setPower(shooter, () -> ShooterConstants.SHOOTER_POWER).withTimeout(1.5),
-                        Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER).withTimeout(3.0)
-                )
-        ).onFalse(
-                Commands.sequence(
-                        Shooter.setPower(shooter, () -> 0.0).withTimeout(0.0),
-                        Intake.setPower(intake, () -> 0.0).withTimeout(0.0)
-                )
+        driverController.dpadDown().onTrue(
+                Pivot.lowerPivot(pivot)
         );
 
         driverController.back().onTrue(DriveCommands.setPose(drive, Pose::new));
