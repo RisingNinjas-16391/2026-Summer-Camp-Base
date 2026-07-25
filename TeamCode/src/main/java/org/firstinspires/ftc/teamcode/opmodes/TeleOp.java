@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RobotContainer;
 import org.firstinspires.ftc.teamcode.commands.auto.PoseStorage;
 import org.firstinspires.ftc.teamcode.lib.ftclib.opmode.CommandOpMode;
+import org.firstinspires.ftc.teamcode.commands.DriveCommands;
 
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class TeleOp extends CommandOpMode {
         robotTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         robotContainer = new RobotContainer(hardwareMap, robotTelemetry, gamepad1, gamepad2, OpModeConstants.TELEOP); //Uses heavily modified untested hardware
         timer.start();
+
+        int pivotLevel = 0;
 
         allHubs = hardwareMap.getAll(LynxModule.class);
 

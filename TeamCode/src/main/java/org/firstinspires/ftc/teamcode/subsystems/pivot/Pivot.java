@@ -15,16 +15,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Pivot extends SubsystemBase {
     private final Telemetry telemetry;
-
     private final MotorEx pivotMotor;
-
     private final SquIDController controller;
-
     private double kSetpoint;
-
     private double currentPosition = PivotConstants.initialPosition;
     private double desiredPosition = PivotConstants.initialPosition;
-
     private boolean isResetting = true;
 
     public Pivot(HardwareMap hwMap, Telemetry telemetry) {
@@ -120,8 +115,54 @@ public class Pivot extends SubsystemBase {
                 Commands.run(() -> pivot.setVoltage(PivotConstants.resetVoltage))
                         .until(() -> pivot.getCurrent() > PivotConstants.currentThreshold && Math.abs(pivot.getVelocity()) < 10),
                 Commands.runOnce(() ->
-                    pivot.setVoltage(0.0)),
+                        pivot.setVoltage(0.0)),
                 Commands.waitSeconds(0.5),
                 Commands.runOnce(pivot::resetMotor));
     }
+
+    public static int pivotLevel = 0;
+
+    public static Command raisePivot(Pivot pivot) {
+        return Commands.runOnce(() -> {
+            pivotLevel++;
+            if (pivotLevel == 0) {
+                Pivot.setPosition(pivot, () -> PivotConstants.FEED);
+            } else if (pivotLevel == 1) {
+                Pivot.setPosition(pivot, () -> PivotConstants.Level1);
+            } else if (pivotLevel == 2) {
+                Pivot.setPosition(pivot, () -> PivotConstants.Level2);
+            } else if (pivotLevel == 3) {
+                Pivot.setPosition(pivot, () -> PivotConstants.Level3);
+            } else if (pivotLevel == 4) {
+                Pivot.setPosition(pivot, () -> PivotConstants.Level4);
+            } else if (pivotLevel == 5) {
+                Pivot.setPosition(pivot, () -> PivotConstants.Level5);
+            } else if (pivotLevel == 6) {
+                Pivot.setPosition(pivot, () -> PivotConstants.CLIMB);
+            }
+        });
+    }
+
+    public static Command lowerPivot(Pivot pivot) {
+        return Commands.runOnce(() -> {
+            pivotLevel--;
+            if (pivotLevel == 0) {
+                Pivot.setPosition(pivot, () -> PivotConstants.FEED);
+            } else if (pivotLevel == 1) {
+                Pivot.setPosition(pivot, () -> PivotConstants.Level1);
+            } else if (pivotLevel == 2) {
+                Pivot.setPosition(pivot, () -> PivotConstants.Level2);
+            } else if (pivotLevel == 3) {
+                Pivot.setPosition(pivot, () -> PivotConstants.Level3);
+            } else if (pivotLevel == 4) {
+                Pivot.setPosition(pivot, () -> PivotConstants.Level4);
+            } else if (pivotLevel == 5) {
+                Pivot.setPosition(pivot, () -> PivotConstants.Level5);
+            } else if (pivotLevel == 6) {
+                Pivot.setPosition(pivot, () -> PivotConstants.CLIMB);
+            }
+        });
+    }
 }
+
+
