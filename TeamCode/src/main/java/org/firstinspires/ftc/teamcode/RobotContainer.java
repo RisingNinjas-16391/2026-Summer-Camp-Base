@@ -74,6 +74,7 @@ public class RobotContainer {
         driverController.rightBumper().onTrue(Pivot.setPosition(pivot, ()->PivotConstants.L4));
         driverController.leftBumper().onTrue(Pivot.setPosition(pivot, ()->PivotConstants.L5));
         driverController.dpadUp().onTrue(Pivot.setPosition(pivot, ()->PivotConstants.CLIMB));
+        //ignore
 
 
 
