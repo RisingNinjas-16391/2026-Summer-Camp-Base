@@ -29,6 +29,7 @@ public class RobotContainer {
     private final Pivot pivot;
     private final Intake intake;
     private final Shooter shooter;
+    private final Claw claw;
     private final Subsystems subsystems;
 
     private final CommandGamepad driverController;
@@ -54,7 +55,7 @@ public class RobotContainer {
     public void setDefaultCommands(){
         drive.setDefaultCommand(
                 Commands.sequence(
-                        DriveCommands.setPose(drive, () -> PoseStorage.currentPose),
+//                        DriveCommands.setPose(drive, () -> PoseStorage.currentPose),
                         DriveCommands.joystickDrive(
                                 drive,
                                 () -> DriveCommands.signSquare(-driverController.getLeftY()),
@@ -66,45 +67,36 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
-        driverController.a().toggleOnTrue(Shooter.setPowerTelop(shooter, () -> ShooterConstants.SHOOTER_POWER));
+        driverController.a().onTrue(Pivot.setPosition(pivot, ()->PivotConstants.FEED));
+        driverController.b().onTrue(Pivot.setPosition(pivot, ()->PivotConstants.L1));
+        driverController.y().onTrue(Pivot.setPosition(pivot, ()->PivotConstants.L2));
+        driverController.x().onTrue(Pivot.setPosition(pivot, ()->PivotConstants.L3));
+        driverController.rightBumper().onTrue(Pivot.setPosition(pivot, ()->PivotConstants.L4));
+        driverController.leftBumper().onTrue(Pivot.setPosition(pivot, ()->PivotConstants.L5));
+        driverController.dpadUp().onTrue(Pivot.setPosition(pivot, ()->PivotConstants.CLIMB));
+
+
+
 
         driverController.start().onTrue(Pivot.resetPosition(pivot));
         driverController.back().onTrue(DriveCommands.setPose(subsystems.drive(), () -> new Pose(0, 0, 0)));
 
-        driverController.b().onTrue(Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER));
 
-        driverController.rightTrigger().onTrue(
-                Commands.parallel(
-                        Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER),
-                        Shooter.setPowerTelop(shooter, () -> -0.5)
-                )
-        ).onFalse(
-                Commands.sequence(
-                        Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER).withTimeout(0.1),
-                        Intake.setPower(intake, () -> 0.0).withTimeout(0.0)
+        driverController.rightTrigger().onTrue(Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER)).onFalse(Intake.setPower(intake, () -> 0.0).withTimeout(0.0));
 
-                )
-        );
+        driverController.leftTrigger().onTrue(Intake.setPower(intake, () -> IntakeConstants.OUTTAKE_POWER)).onFalse(Intake.setPower(intake, () -> 0.0).withTimeout(0.0));
 
-        driverController.leftTrigger().onTrue(
-                Commands.sequence(
-                        Shooter.setPower(shooter, () -> ShooterConstants.SHOOTER_POWER).withTimeout(1.5),
-                        Intake.setPower(intake, () -> IntakeConstants.INTAKE_POWER).withTimeout(3.0)
-                )
-        ).onFalse(
-                Commands.sequence(
-                        Shooter.setPower(shooter, () -> 0.0).withTimeout(0.0),
-                        Intake.setPower(intake, () -> 0.0).withTimeout(0.0)
-                )
-        );
+
 
         driverController.back().onTrue(DriveCommands.setPose(drive, Pose::new));
+
+
     }
 
     public Command getAutoCommand(OpModeConstants auto) {
         return switch (auto) {
             case BLUE_AUTO -> AutoCommands.blueAuto(subsystems);
-            case RED_AUTO -> AutoCommands.redAuto(subsystems);
+            case RED_AUTO -> AutoCommands. redAuto(subsystems);
             default -> Commands.none();
         };
     }

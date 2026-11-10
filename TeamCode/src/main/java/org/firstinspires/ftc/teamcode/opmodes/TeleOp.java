@@ -54,6 +54,6 @@ public class TeleOp extends CommandOpMode {
     public void disabledInit() {
         CommandScheduler.getInstance().reset();
 
-        PoseStorage.currentPose = robotContainer.getDrivePose();
+//        PoseStorage.currentPose = robotContainer.getDrivePose();
     }
 }

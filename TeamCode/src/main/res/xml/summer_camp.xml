@@ -2,8 +2,8 @@
     <!-- Config for main 2024 Robot -->
     <LynxUsbDevice name="Control Hub Portal" serialNumber="(embedded)" parentModuleAddress="173">
         <LynxModule name="Control Hub" port="173">
-            <goBILDA5202SeriesMotor name="FL" port="0"/>-->
-            <goBILDA5202SeriesMotor name="BL" port="1"/>-->
+            <goBILDA5202SeriesMotor name="FR" port="0"/>-->
+            <goBILDA5202SeriesMotor name="BR" port="1"/>-->
             <goBILDA5202SeriesMotor name="shooter" port="3"/>-->
             <goBILDA5202SeriesMotor name="pivot" port="2"/>-->
 
@@ -14,8 +14,8 @@
         </LynxModule>
         <LynxModule name="Expansion Hub 1" port="1">
 
-            <goBILDA5202SeriesMotor name="FR" port="1"/>
-            <goBILDA5202SeriesMotor name="BR" port="0"/>
+            <goBILDA5202SeriesMotor name="FL" port="1"/>
+            <goBILDA5202SeriesMotor name="BL" port="0"/>
             <goBILDA5202SeriesMotor name="intake" port="2"/>-->
 
 
